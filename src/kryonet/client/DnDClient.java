@@ -34,7 +34,7 @@ import com.esotericsoftware.kryonet.Listener;
 
 public class DnDClient extends StateBasedGame {
 	
-	public static boolean testing = true;
+	public static boolean testing = false;
 	
 	public static final int LOADINGSTATE	 = 0;
 	public static final int LOGINSSTATE 	 = 1;
@@ -60,7 +60,7 @@ public class DnDClient extends StateBasedGame {
 		ResourceManager.getInstance().loadResources(new FileInputStream("src/data/resourceLoaderFile.xml"), true);
 		SimpleSkin.setRoundRectanglesEnabled(true);
 		
-		client = new Client();
+		client = new Client(8192, 8192);
 		client.start();		
 		DnDNetwork.register(client);		
 		client.addListener(new Listener.ThreadedListener(new Listener() {
@@ -78,11 +78,11 @@ public class DnDClient extends StateBasedGame {
 		new Thread("Connect") {
 			public void run () {
 				try {
-//					if(testing) {
+					if(testing) {
 						client.connect(5000, "localhost", DnDNetwork.port);
-//					} else {
-//						client.connect(5000, "54.245.51.122", DnDNetwork.port);
-//					}
+					} else {
+						client.connect(5000, "54.245.51.122", DnDNetwork.port);
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.exit(1);

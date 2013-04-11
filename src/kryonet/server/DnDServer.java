@@ -99,7 +99,7 @@ public class DnDServer {
 				Database.getInstance().closeConnection();
 			}
 		});
-		frame.getContentPane().add(new JLabel("Close to stop the chat server."));
+		frame.getContentPane().add(new JLabel("Close to stop the DnD server."));
 		frame.setSize(320, 200);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);

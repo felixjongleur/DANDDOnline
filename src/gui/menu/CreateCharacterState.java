@@ -12,6 +12,7 @@ import mdes.slick.sui.Label;
 import mdes.slick.sui.ScrollPane;
 import mdes.slick.sui.Sui;
 import mdes.slick.sui.TextArea;
+import mdes.slick.sui.TextField;
 import mdes.slick.sui.ToggleButton;
 import mdes.slick.sui.ToggleButtonGroup;
 import mdes.slick.sui.event.ActionEvent;
@@ -29,6 +30,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 public class CreateCharacterState extends BasicGameState {
 
@@ -55,11 +57,10 @@ public class CreateCharacterState extends BasicGameState {
 	ToggleButtonGroup classGroup;	
 	ToggleButtonGroup genderGroup;
 	
-	TextArea characterName;
+	TextField characterName;
 	Button acceptButton;
 
 	private AlertMessagePopup popup;
-	
 	private boolean render = false;
 	
 	String genderForImages = "MALE";
@@ -152,7 +153,10 @@ public class CreateCharacterState extends BasicGameState {
 		createCharacterContainer();
 		createRaceContainer();
 		createClassContainer();
-		
+		createOptions();		
+	}
+	
+	private void createOptions() {
 		Label label = new Label("Name");
 		label.setSize(100, 30);
 		label.setLocationRelativeTo(display);
@@ -161,14 +165,11 @@ public class CreateCharacterState extends BasicGameState {
 		label.setFont(LoadingState.labelFont);
 		display.add(label);
 		
-		characterName = new TextArea(10, 1);
-		characterName.setAutoResize(false);
+		characterName = new TextField(10);
 		characterName.setMaxChars(10);
-		characterName.setBackground(new Color(0, 0, 0, 0.8f));
-		characterName.setOpaque(true);
 		characterName.setForeground(Color.white);
 		characterName.setLocationRelativeTo(display);
-		characterName.setY(label.getAbsoluteY() + 45);
+		characterName.setY(label.getAbsoluteY() + 35);
 		display.add(characterName);	
 		
 		KeyListener characterListener = new KeyListener() {			
@@ -191,7 +192,7 @@ public class CreateCharacterState extends BasicGameState {
 		acceptButton = new Button("Accept");
 		acceptButton.setSize(100, 30);
 		acceptButton.setLocationRelativeTo(display);
-		acceptButton.setY(characterName.getAbsoluteY() + 45);
+		acceptButton.setY(characterName.getAbsoluteY() + 30);
 		acceptButton.setImage(ResourceManager.getInstance().getImage("MENU_BUTTON"));
 		acceptButton.setFont(LoadingState.font);
 		acceptButton.packImage();
@@ -223,7 +224,23 @@ public class CreateCharacterState extends BasicGameState {
         
         popup = new AlertMessagePopup(display);
         
-        render = true;
+        Button backButton = new Button("Back");
+        backButton.setSize(100, 30);
+        backButton.setLocationRelativeTo(display);
+        backButton.setY(acceptButton.getAbsoluteY() + 40);
+        backButton.setImage(ResourceManager.getInstance().getImage("MENU_BUTTON"));
+        backButton.setFont(LoadingState.font);
+        backButton.packImage();
+        backButton.setForeground(Color.white);
+        backButton.setFocusColor(Color.yellow);
+		display.add(backButton);
+        
+        ActionListener backButtonAction = new ActionListener() {
+            public void actionPerformed(ActionEvent ev) {
+				sb.enterState(DnDClient.MAINMENUSTATE, new FadeOutTransition(), new FadeInTransition());
+            } 
+        };        
+        backButton.addActionListener(backButtonAction);
 	}
 	
 	private void createClassContainer() {		
@@ -453,18 +470,16 @@ public class CreateCharacterState extends BasicGameState {
 		g.setAntiAlias(true);
 		packImages();
 		
-		ResourceManager.getInstance().getImage("CREATE_CHARACTER_BACKGROUND").getScaledCopy(DnDClient.SCREENWIDTH, DnDClient.SCREENHEIGHT).draw(0, 0);
-		
-		display.render(gc, g);
-		
-		createEmptySquares();
-		
-//		if(render) {
+		ResourceManager.getInstance().getImage("CREATE_CHARACTER_BACKGROUND").getScaledCopy(DnDClient.SCREENWIDTH, DnDClient.SCREENHEIGHT).draw(0, 0);		
+
+		if(render) {
+			display.render(gc, g);
+			createEmptySquares();		
 			raceGroup.getSelectedButton().getImage().draw(racePane.getAbsoluteX() - 15, racePane.getAbsoluteY() - 15);
 			ResourceManager.getInstance().getImage("EMPTY_SQUARE").getScaledCopy(60, 60).draw(racePane.getAbsoluteX() - 15, racePane.getAbsoluteY() - 15);
 			classGroup.getSelectedButton().getImage().draw(classPane.getAbsoluteX() - 15, classPane.getAbsoluteY() - 15);
 			ResourceManager.getInstance().getImage("EMPTY_SQUARE").getScaledCopy(60, 60).draw(classPane.getAbsoluteX() - 15, classPane.getAbsoluteY() - 15);
-//		}
+		}
 	}
 
 	@Override
@@ -475,6 +490,7 @@ public class CreateCharacterState extends BasicGameState {
 		classDescription.setText(classGroup.getSelectedButton().getText());		
 		
 		display.update(gc, delta);
+		render = true;
 	}
 
 	@Override

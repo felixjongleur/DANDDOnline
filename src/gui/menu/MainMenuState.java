@@ -194,7 +194,7 @@ public class MainMenuState extends BasicGameState {
 		ActionListener createCharacterAction = new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				sb.enterState(DnDClient.CREATECHARSTATE, null, new FadeInTransition());
+				sb.enterState(DnDClient.CREATECHARSTATE, new FadeOutTransition(), new FadeInTransition());
 			}
 		};
 		
