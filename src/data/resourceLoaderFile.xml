@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+<!-- UTIL -->
+	<resource type="image" id="MENU_BUTTON">data\util\menuButton.png</resource>
+	<resource type="image" id="EMPTY_SQUARE">data\util\emptySquare.png</resource>
+	<resource type="image" id="EMPTY_BAG_SQUARE">data\emptyBagSquare.png</resource>
+<!-- FONTS -->
+	<resource type="font" id="MENU_BUTTON_FONT">data\fonts\CLOISTERBLACK.TTF</resource>
+<!-- LOADING -->
+	<resource type="image" id="LOADING_SCREEN_BACKGROUND">data\backgrounds\loadingScreen.jpg</resource>
+<!-- MAIN MENU -->
+	<resource type="image" id="MAIN_MENU_IMAGE">data\backgrounds\mainMenu.jpg</resource>
+<!-- CREATE CHARACTER SCREEN -->
+	<resource type="image" id="CREATE_CHARACTER_BACKGROUND">data\backgrounds\createCharacterScreen.jpg</resource>
+	<resource type="image" id="MALE_SYMBOL">data\races\util\male.png</resource>
+	<resource type="image" id="MALE_SYMBOL_SELECTED">data\races\util\maleSelected.png</resource>
+	<resource type="image" id="FEMALE_SYMBOL">data\races\util\female.png</resource>
+	<resource type="image" id="FEMALE_SYMBOL_SELECTED">data\races\util\femaleSelected.png</resource>
+	<!-- Race Head shots -->
+	<resource type="image" id="MALE_HUMAN">data\races\avatars\maleHuman.png</resource>
+	<resource type="image" id="FEMALE_HUMAN">data\races\avatars\femaleHuman.png</resource>
+	<resource type="image" id="MALE_DRAGONBORN">data\races\avatars\maleDragonborn.png</resource>
+	<resource type="image" id="FEMALE_DRAGONBORN">data\races\avatars\femaleDragonborn.png</resource>
+	<!-- Class Icons -->
+	<resource type="image" id="CLERIC">data\classes\cleric.png</resource>
+	<resource type="image" id="FIGHTER">data\classes\fighter.png</resource>
+<!-- WORLD CHAT -->
+	<resource type="image" id="WORLD_CHAT_IMAGE">data\backgrounds\worldChatScreen.jpg</resource>
+<!-- NEW GAME -->
+	<resource type="image" id="NEW_GAME_SCREEN_BACKGROUND">data\backgrounds\newGameScreen.jpg</resource>
+<!-- GUI -->
+	<resource type="image" id="BACK_PACK">data\emptyBackPack.png</resource>
+	<!-- Tiles -->
+		<resource type="image" id="GROUND">data\ground.jpg</resource>
+	<!-- Character -->
+		<resource type="image" id="HUMAN_FIGHTER">data\humanFighter.png</resource>
+</resources>
