@@ -137,8 +137,8 @@ public class DnDServer {
 		ArrayList<String> names = new ArrayList<String>(connections.length);
 		for (int i = connections.length - 1; i >= 0; i--) {
 			DnDConnection connection = (DnDConnection)connections[i];
-			if(connection.name != null)
-				names.add(connection.name);
+			if(connection.characterName != null)
+				names.add(connection.characterName);
 		}
 		// Send the names to everyone.
 		UpdateNames updateNames = new UpdateNames();
@@ -147,9 +147,9 @@ public class DnDServer {
 	}
 
 	private void loginCharacter(DnDConnection connection, LoginCharacter character) {
-		connection.name = character.name;
+		connection.characterName = character.name;
 		Message chatMessage = new Message();
-		chatMessage.text = connection.name + " has connected.";
+		chatMessage.text = connection.characterName + " has connected.";
 		server.sendToAllExceptTCP(connection.getID(), chatMessage);
 		updateNames();
 	}
@@ -161,12 +161,11 @@ public class DnDServer {
 		message = message.trim();
 		if (message.length() == 0) return;
 		// Prepend the connection's name and send to everyone.
-		chatMessage.text = connection.name + ": " + message;
+		chatMessage.text = connection.characterName + ": " + message;
 		server.sendToAllTCP(chatMessage);
 	}
 
 	private void getCharacters(DnDConnection connection, GetCharacters character) {
-
 		List<DnDCharacter> characters = new ArrayList<DnDCharacter>();
 		if(!DnDClient.testing) {
 			ResultSet results = AccountManager.getInstance().getAccountCharacters(character.name);
@@ -198,11 +197,17 @@ public class DnDServer {
 	}
 
 	private void checkLogin(DnDConnection connection, Login login) {
-		if(AccountManager.getInstance().validateLogin(login.username, login.password)){
+		if(isUserLoggedIn(login)) {
+			login.accepted = false;
+			login.errorMessage = "User Is Already Logged In";
+			System.out.println("Connection : " + connection.getRemoteAddressTCP() + " - Invalid Login: " + login.username + ":" + login.password);
+		} else if(AccountManager.getInstance().validateLogin(login.username, login.password)){
+			connection.userName = login.username;
 			login.accepted = true;
 			System.out.println("Connection : " + connection.getRemoteAddressTCP() + " - Login: " + login.username + ":" + login.password);
 		} else {
 			login.accepted = false;
+			login.errorMessage = "Invalid Username / Password";
 			System.out.println("Connection : " + connection.getRemoteAddressTCP() + " - Invalid Login: " + login.username + ":" + login.password);
 		}
 		server.sendToTCP(connection.getID(), login);
@@ -211,14 +216,24 @@ public class DnDServer {
 	private void disconnectCharacter(DnDConnection connection) {
 		// Announce to everyone that someone (with a registered name) has left.
 		Message chatMessage = new Message();
-		chatMessage.text = connection.name + " has disconnected.";
+		chatMessage.text = connection.characterName + " has disconnected.";
 		server.sendToAllExceptTCP(connection.getID(), chatMessage);
-		connection.name = null;
+		connection.characterName = null;
 		updateNames();
 	}
 	
+	private boolean isUserLoggedIn(Login login) {
+		for(Connection connection : server.getConnections()) {
+			if(((DnDConnection) connection).userName == login.username) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static class DnDConnection extends Connection {
-		String name;
+		String userName;
+		String characterName;
 	}
 	
 	public static void main(String[] args) throws IOException {

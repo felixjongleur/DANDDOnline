@@ -86,6 +86,7 @@ public class DnDNetwork {
 		public String username;
 		public String password;
 		public boolean accepted;
+		public String errorMessage;
 	}
 	
 	public static class CreateAccount {

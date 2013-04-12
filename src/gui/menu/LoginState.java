@@ -393,7 +393,7 @@ public class LoginState extends BasicGameState {
 				gc.getInput().clearKeyPressedRecord();
 				sb.enterState(DnDClient.MAINMENUSTATE, new FadeOutTransition(), new FadeInTransition());	
 			} else {
-				((Label) popup.getChildByName("invalidLoginLabel")).setText("Invalid Username / Password");
+				((Label) popup.getChildByName("invalidLoginLabel")).setText(login.errorMessage);
 				popup.setVisible(true);
 				popup.grabFocus();
 			}			
