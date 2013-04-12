@@ -224,7 +224,7 @@ public class DnDServer {
 	
 	private boolean isUserLoggedIn(Login login) {
 		for(Connection connection : server.getConnections()) {
-			if(((DnDConnection) connection).userName == login.username) {
+			if(((DnDConnection) connection).userName.equals(login.username)) {
 				return true;
 			}
 		}
