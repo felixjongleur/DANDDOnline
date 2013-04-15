@@ -40,6 +40,7 @@ public class CreateCharacterState extends BasicGameState {
 	StateBasedGame sb;
 	
 	Container characterContainer;
+	TextArea classTitle, raceTitle;
 	TextArea classDescription, raceDescription;
 	ScrollPane classPane, racePane;
 	
@@ -65,9 +66,7 @@ public class CreateCharacterState extends BasicGameState {
 	
 	String genderForImages = "MALE";
 	
-	String humanDescripton =      "             " +
-								  "HUMAN\n\n            " +
-								  "Of all the civilized races, humans are the most adaptable and diverse. Human settlements can " +
+	String humanDescripton =      "Of all the civilized races, humans are the most adaptable and diverse. Human settlements can " +
 								  "be found almost anywhere, and human morals, customs, and interests vary greatly. Humans are " +
 								  "decisive and sometimes rash. They explore the darkest reaches of the world in search of " +
 								  "knowledge and power.\n\n" +
@@ -75,57 +74,41 @@ public class CreateCharacterState extends BasicGameState {
 								  "  - Bonus At-Will Power : One Extra Power\n\n" +
 								  "  - Bonus Feat : One Extra Feat\n\n" +
 								  "  - Bonus Skill : One Extra Skill\n\n" +
-								  "  - Defense Bonus : +1 to Fortitude,\n" +
-								  "                                Reflex and Will\n\n" +
+								  "  - Defense Bonus : +1 to Fortitude, Reflex and Will\n\n" +
 								  "  - Favors : Any Class";
-	String dragonbornDescripton = "             " +
-								  "DRAGONBORN\n\n            " +
-								  "Born to fight, dragonborn are a race   of wandering mercenaries, soldiers and adv- enturers. " +
-								  "Long ago, their empire contended for worldwide domination, but now only a    few rootless clans " +
-								  "of these honorable warr-  iors remain to pass on their legends of    ancient glory.\n\n" +
+	
+	String dragonbornDescripton = "Born to fight, dragonborn are a race of wandering mercenaries, soldiers and adventurers. " +
+								  "Long ago, their empire contended for worldwide domination, but now only a few rootless clans " +
+								  "of these honorable warriors remain to pass on their legends of ancient glory.\n\n" +
 								  "  - Ability Scores : +2 Strength; +2 Charisma\n\n" +
 								  "  - Skill Bonuses  : +2 History ; +2 Intimidate\n\n" +
-								  "  - Favors : Warlord, Fighter and Paladin" +
-								  "\n\n\n\n\n";
+								  "  - Favors : Warlord, Fighter and Paladin";
 	
-	String clericDescription =    "             " +
-								  "CLERIC\n\n            " +
-								  "Battle leaders who are invested with divine power. They blast foes with magical prayers, " +
+	String clericDescription =    "Battle leaders who are invested with divine power. They blast foes with magical prayers, " +
 								  "bolster and heal companions, and lead the way to victory with a mace in one hand and a " +
 								  "holy symbol in the other. Clerics run the gamut from humble servants of the common folk " +
-								  "to ruthless enforcers \nof evil gods.\n\n" +
+								  "to ruthless enforcers of evil gods.\n\n" +
 								  "  - Role : Leader \n\n" +
 								  "  - Power Source : Divine \n\n" +
-								  "  - Key Abilities : Wisdom, Strength,\n" +
-								  "                          Charisma \n\n" +
-								  "  - Armor Proficiencies : Cloth, Leather, \n" +
-								  "                                     Hide, Chainmail \n\n" +
-								  "  - Weapon Proficiencies : Simple Melee, \n" +
-								  "                                         Simple Ranged \n\n" +
+								  "  - Key Abilities : Wisdom, Strength, Charisma \n\n" +
+								  "  - Armor Proficiencies : Cloth, Leather, Hide, Chainmail \n\n" +
+								  "  - Weapon Proficiencies : Simple Melee, Simple Ranged \n\n" +
 								  "  - Implement : Holy symbol \n\n" +
 								  "  - Bonus to Defense : +2 Will \n\n" +
 								  "  - Trained Skills : Religion \n\n" +
-								  "  - Build Options : Battle Cleric, \n" +
-								  "                            Devoted Cleric";
-	String fighterDescription =   "             " +
-								  "FIGHTER\n\n            " +
-								  "Determined combat adepts that are trained to protect the other members of\ntheir adventuring " +
-								  "groups. Fighters define \nthe front line by bashing and slicing foes \ninto submission while " +
-								  "reflecting enemy atta-  cks through the use of heavy armor. Fighters draw weapons for gold, " +
-								  "for glory, for duty, \nand for the mere joy of unrestrained martial exercise.\n\n" +
+								  "  - Build Options : Battle Cleric, Devoted Cleric";
+	
+	String fighterDescription =   "Determined combat adepts that are trained to protect the other members of their adventuring " +
+								  "groups. Fighters define the front line by bashing and slicing foes into submission while " +
+								  "reflecting enemy attacks through the use of heavy armor. Fighters draw weapons for gold, " +
+								  "for glory, for duty, and for the mere joy of unrestrained martial exercise.\n\n" +
 								  "  - Role : Defender \n\n" +
 								  "  - Power Source : Martial \n\n" +
-								  "  - Key Abilities : Strength, Dexterity\n" +
-								  "                        Wisdom, Constitution \n\n" +
-								  "  - Armor Proficiencies : Cloth, Leather, \n" +
-								  "                                   Hide, Chainmail, Scale \n\n" +
-								  "  - Weapon Proficiencies : Simple Melee,\n" +
-								  "                                         Military Melee,\n" +
-								  "                                         Simple Ranged,\n" +
-								  "                                         Military Ranged \n\n" +
+								  "  - Key Abilities : Strength, Dexterity, Wisdom, Constitution \n\n" +
+								  "  - Armor Proficiencies : Cloth, Leather, Hide, Chainmail, Scale \n\n" +
+								  "  - Weapon Proficiencies : Simple Melee, Military Melee, Simple Ranged, Military Ranged \n\n" +
 								  "  - Bonus to Defense : +2 Fortitude \n\n" +
-								  "  - Build Options : Great Weapon Fighter, \n" +
-								  "                             Guardian Fighter";
+								  "  - Build Options : Great Weapon Fighter, Guardian Fighter";
 	
 	public CreateCharacterState(int stateID) {
 		this.stateID = stateID;
@@ -243,20 +226,31 @@ public class CreateCharacterState extends BasicGameState {
         backButton.addActionListener(backButtonAction);
 	}
 	
-	private void createClassContainer() {		
+	private void createClassContainer() {
+		
+		classTitle = new TextArea();
+		classTitle.setSize(275, 50);
+		classTitle.setLocation(DnDClient.SCREENWIDTH - classTitle.getWidth() - 25, racePane.getAbsoluteY() + racePane.getHeight() + 50);
+		classTitle.setBackground(new Color(0, 0, 0, 0.6f));
+		classTitle.setForeground(Color.white);
+		classTitle.setOpaque(true);
+		classTitle.setEditable(false);
+		classTitle.setAutoResize(false);
+		display.add(classTitle);		
+		
 		classDescription = new TextArea();
-		classDescription.setSize(300, characterContainer.getHeight() / 2 - 25);
+		classDescription.setSize(275, characterContainer.getHeight() / 2 - 75);
+		classDescription.setMinimumSize(classDescription.getSize());
 		classDescription.setBackground(new Color(0, 0, 0, 0.6f));
 		classDescription.setForeground(Color.white);
 		classDescription.setOpaque(true);
 		classDescription.setEditable(false);
 		
 		classPane = new ScrollPane(classDescription);
-		classPane.setLocation(DnDClient.SCREENWIDTH - classDescription.getWidth() - 25, racePane.getAbsoluteY() + racePane.getHeight() + 50);
+		classPane.setLocation(DnDClient.SCREENWIDTH - classDescription.getWidth() - 25, classTitle.getAbsoluteY() + classTitle.getHeight());
 		classPane.setBackground(new Color(0, 0, 0, 0f));
 		classPane.setOpaque(true);
 		classPane.setSize(classDescription.getWidth(), classDescription.getHeight());
-		System.out.println(classDescription.getWidth());
 		display.add(classPane);
 		
 		ChangeListener textChanged = new ChangeListener() {			
@@ -270,20 +264,29 @@ public class CreateCharacterState extends BasicGameState {
 	}
 	
 	private void createRaceContainer() {		
+		raceTitle = new TextArea();
+		raceTitle.setSize(275, 50);
+		raceTitle.setLocation(DnDClient.SCREENWIDTH - raceTitle.getWidth() - 25, characterContainer.getAbsoluteY());
+		raceTitle.setBackground(new Color(0, 0, 0, 0.6f));
+		raceTitle.setForeground(Color.white);
+		raceTitle.setOpaque(true);
+		raceTitle.setEditable(false);
+		raceTitle.setAutoResize(false);
+		display.add(raceTitle);
+		
 		raceDescription = new TextArea();
-		raceDescription.setSize(300, characterContainer.getHeight() / 2 - 25);
+		raceDescription.setSize(275, characterContainer.getHeight() / 2 - 25);
+		raceDescription.setMinimumSize(raceDescription.getSize());
 		raceDescription.setBackground(new Color(0, 0, 0, 0.6f));
 		raceDescription.setForeground(Color.white);
 		raceDescription.setOpaque(true);
 		raceDescription.setEditable(false);
-		raceDescription.setText(humanDescripton);
 		
 		racePane = new ScrollPane(raceDescription);
-		racePane.setLocation(DnDClient.SCREENWIDTH - raceDescription.getWidth() - 25, characterContainer.getAbsoluteY());
+		racePane.setLocation(DnDClient.SCREENWIDTH - raceDescription.getWidth() - 25, raceTitle.getAbsoluteY() + raceTitle.getHeight());
 		racePane.setBackground(new Color(0, 0, 0, 0f));
 		racePane.setOpaque(true);
 		racePane.setSize(raceDescription.getWidth(), raceDescription.getHeight());
-		System.out.println(raceDescription.getWidth());
 		display.add(racePane);
 				
 		ChangeListener textChanged = new ChangeListener() {			
@@ -475,10 +478,10 @@ public class CreateCharacterState extends BasicGameState {
 		if(render) {
 			display.render(gc, g);
 			createEmptySquares();		
-			raceGroup.getSelectedButton().getImage().draw(racePane.getAbsoluteX() - 15, racePane.getAbsoluteY() - 15);
-			ResourceManager.getInstance().getImage("EMPTY_SQUARE").getScaledCopy(60, 60).draw(racePane.getAbsoluteX() - 15, racePane.getAbsoluteY() - 15);
-			classGroup.getSelectedButton().getImage().draw(classPane.getAbsoluteX() - 15, classPane.getAbsoluteY() - 15);
-			ResourceManager.getInstance().getImage("EMPTY_SQUARE").getScaledCopy(60, 60).draw(classPane.getAbsoluteX() - 15, classPane.getAbsoluteY() - 15);
+			raceGroup.getSelectedButton().getImage().draw(raceTitle.getAbsoluteX() - 15, raceTitle.getAbsoluteY() - 15);
+			ResourceManager.getInstance().getImage("EMPTY_SQUARE").getScaledCopy(60, 60).draw(raceTitle.getAbsoluteX() - 15, raceTitle.getAbsoluteY() - 15);
+			classGroup.getSelectedButton().getImage().draw(classTitle.getAbsoluteX() - 15, classTitle.getAbsoluteY() - 15);
+			ResourceManager.getInstance().getImage("EMPTY_SQUARE").getScaledCopy(60, 60).draw(classTitle.getAbsoluteX() - 15, classTitle.getAbsoluteY() - 15);
 		}
 	}
 
@@ -486,7 +489,9 @@ public class CreateCharacterState extends BasicGameState {
 	public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {	
 		genderForImages = genderGroup.getSelectedButton().getText();
 		setRaceImages();
+		raceTitle.setText("\n            " + raceGroup.getSelectedButton().getName());
 		raceDescription.setText(raceGroup.getSelectedButton().getText());
+		classTitle.setText("\n            " + classGroup.getSelectedButton().getName());
 		classDescription.setText(classGroup.getSelectedButton().getText());		
 		
 		display.update(gc, delta);
