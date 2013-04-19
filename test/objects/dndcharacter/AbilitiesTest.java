@@ -39,10 +39,10 @@ public class AbilitiesTest {
 
 	@Test
 	public void testScoreModifierTable() throws Exception {
-		Abilities abilities = new Abilities(10);
+		Abilities abilities = new Abilities();
 		for(Entry<Integer, Integer> scoreModifier : scoreModifierMap.entrySet()){
 			assertEquals("Expected: "+scoreModifier.getValue()+" for a score of: "+scoreModifier.getKey(),
-					scoreModifier.getValue(), (Integer)abilities.getAbilityModifier(scoreModifier.getKey()));
+					scoreModifier.getValue(), (Integer)abilities.getModifier(scoreModifier.getKey()));
 		}
 	}
 
@@ -69,34 +69,6 @@ public class AbilitiesTest {
 		DnDCharacter you = new DnDCharacter();
 		me.setStrength(1);
 		assertEquals(1, me.attack(20, you));
-	}
-	
-	@Test
-	public void testDexterityModifierAddedToArmorClass_DefaultNoBonus() throws Exception {
-		DnDCharacter me = new DnDCharacter();
-		assertEquals(10, me.getArmor());
-	}
-	
-	@Test
-	public void testDexterityModifierAddedToArmorClass_HighBound() throws Exception {
-		DnDCharacter me = new DnDCharacter();
-		me.setDexterity(20);
-		assertEquals(15, me.getArmor());
-	}
-	
-	@Test
-	public void testDexterityModifierAddedToArmorClass_LowBound() throws Exception {
-		DnDCharacter me = new DnDCharacter();
-		me.setDexterity(1);
-		assertEquals(5, me.getArmor());
-	}
-	
-	@Test
-	public void testDexterityModifierAddedToArmorClass_GreaterThanOrEqual0() throws Exception {
-		DnDCharacter me = new DnDCharacter();
-		me.setDefense(1);
-		me.setDexterity(1);
-		assertEquals(0, me.getArmor());
 	}
 	
 	@Test

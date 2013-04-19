@@ -24,17 +24,17 @@ public class CombatSimulator {
 	}
 
 	private boolean isAttackSuccessful(int attackRoll, DnDCharacter opposingCharacter) {
-		return attackRoll >= opposingCharacter.getArmor();
+		return false;
 	}
 
 	public int getModifiedDamage(DnDCharacter attacker, int damage, boolean crit) {
-		damage += attacker.getAbilities().getAbilityModifier(attacker.getAbilities().getStrength());
+		damage += attacker.getAbilities().getModifier(attacker.getAbilities().getStrength());
 //		damage *= crit ? attacker.getClassType().getCritMultiplier() : 1;
 		return Math.max(1, damage);
 	}
 
 	public int getModifiedAttackRoll(DnDCharacter attacker, int attackRoll) {
-		int modifiedAttackRoll = attackRoll + attacker.getAbilities().getAbilityModifier(attacker.getAbilities().getStrength());
+		int modifiedAttackRoll = attackRoll + attacker.getAbilities().getModifier(attacker.getAbilities().getStrength());
 		
 		if(modifiedAttackRoll > 0) {
 			modifiedAttackRoll = Math.min(modifiedAttackRoll, 20);

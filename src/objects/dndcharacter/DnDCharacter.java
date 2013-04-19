@@ -26,7 +26,7 @@ public class DnDCharacter extends WorldObject {
 	private Race raceType;
 	private String name;
 	private int hitPoints;
-	private Defense armor;
+	private Defense defense;
 	private Experience xp;
 	private Alignment alignment;
 	private Abilities abilities;
@@ -56,12 +56,12 @@ public class DnDCharacter extends WorldObject {
 	public DnDCharacter(int x, int y, String name, ClassType classType, RaceType raceType, AlignmentStance alignment) {
 		super(x, y);
 		this.setName(name);
-		this.setArmor(new Defense());
+		this.setDefense(new Defense());
 		this.classType = DnDClass.getClassFromMap(classType);
 		this.raceType  = Race.getRaceFromMap(raceType);
 		this.language = new Language(raceType);
 		this.setAlignment(new Alignment(alignment));
-		this.abilities = new Abilities(10);
+		this.abilities = new Abilities();
 		this.hitPoints = this.classType.getStartHP(abilities.getConstitution());
 		this.xp = new Experience(0);
 		this.setAge(generateAge());
@@ -76,6 +76,10 @@ public class DnDCharacter extends WorldObject {
 		setImage(ResourceManager.getInstance().getImage(imageName.toUpperCase()));
 	}
 	
+	private void setDefense(Defense defense) {
+		this.defense = defense;
+	}
+
 	@Override
 	public String toString() {
 		return "Lvl. " + xp.getLevel() + " - " + raceType.toString() + " " + classType.toString(); 
@@ -120,19 +124,6 @@ public class DnDCharacter extends WorldObject {
 		hitPoints -= hp;
 	}
 
-	public int getArmor() {
-		//return 10 + armorBonus + shieldBonus + abilities.getModifier(abilities.getDexterity()) + sizeModifier;
-		return Math.max(0, armor.getArmor() + abilities.getAbilityModifier(abilities.getDexterity()));
-	}
-
-	public void setDefense(int defense) {
-		armor.setArmor(defense);
-	}
-	
-	public void setArmor(Defense armor) {
-		this.armor = armor;
-	}
-
 	public void setHP(int hitPoints) {
 		this.hitPoints = hitPoints;
 	}
@@ -143,7 +134,7 @@ public class DnDCharacter extends WorldObject {
 			return 0;
 		}
 		
-		int constitutionModifier = abilities.getAbilityModifier(abilities.getConstitution());		
+		int constitutionModifier = abilities.getModifier(abilities.getConstitution());		
 		if(hitPoints + constitutionModifier < 1) {
 			return 1;
 		}
