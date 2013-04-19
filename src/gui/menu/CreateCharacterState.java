@@ -362,7 +362,6 @@ public class CreateCharacterState extends BasicGameState {
 		humanButton = new ToggleButton();
 		humanButton.setName("HUMAN");
 		humanButton.setForeground(new Color(0, 0, 0, 0.0f));
-		humanButton.setText(humanDescripton);
 		humanButton.setBounds(xStart + 60 + xStart, yStart + yOffset, 60, 60);
 		humanButton.setGroup(raceGroup);
 		characterContainer.add(humanButton);		
