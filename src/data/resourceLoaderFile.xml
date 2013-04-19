@@ -2,6 +2,7 @@
 <resources>
 <!-- UTIL -->
 	<resource type="image" id="MENU_BUTTON">data\util\menuButton.png</resource>
+	<resource type="image" id="BLANK_SQUARE">data\util\blankSquare.png</resource>
 	<resource type="image" id="EMPTY_SQUARE">data\util\emptySquare.png</resource>
 	<resource type="image" id="EMPTY_BAG_SQUARE">data\emptyBagSquare.png</resource>
 <!-- FONTS -->
