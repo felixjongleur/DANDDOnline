@@ -12,21 +12,25 @@ import objects.dndcharacter.Alignment;
 import objects.dndcharacter.Alignment.AlignmentStance;
 import objects.dndcharacter.BackPack;
 import objects.dndcharacter.Defense;
+import objects.dndcharacter.Defense.DefenseType;
 import objects.dndcharacter.DnDCharacter;
 import objects.dndcharacter.DnDCharacter.Gender;
 import objects.dndcharacter.Experience;
 import objects.dndcharacter.Language;
 import objects.dndcharacter.Language.LanguageType;
 import objects.dndcharacter.Language.ScriptType;
+import objects.dndcharacter.classes.ClassTrait;
 import objects.dndcharacter.classes.Cleric;
 import objects.dndcharacter.classes.DnDClass;
 import objects.dndcharacter.classes.DnDClass.ClassSkills;
+import objects.dndcharacter.classes.DnDClass.ClassType;
 import objects.dndcharacter.classes.DnDClass.PowerSource;
 import objects.dndcharacter.classes.DnDClass.Role;
 import objects.dndcharacter.classes.Fighter;
 import objects.dndcharacter.races.Dragonborn;
 import objects.dndcharacter.races.Human;
 import objects.dndcharacter.races.Race;
+import objects.dndcharacter.races.RacialTrait;
 import objects.util.Range;
 import objects.weapons.Weapon.WeaponType;
 
@@ -75,6 +79,10 @@ public class DnDNetwork {
 		kryo.register(DisconnectCharacter.class);
 		kryo.register(CreateAccount.class);
 		kryo.register(CreateCharacter.class);
+		kryo.register(ClassTrait.class);
+		kryo.register(ClassType.class);
+		kryo.register(DefenseType.class);
+		kryo.register(RacialTrait.class);
 	}
 	
 	public static class Register {

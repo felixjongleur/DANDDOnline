@@ -9,6 +9,8 @@ import enums.Enums.Vision;
 
 public abstract class Race {
 	
+	private RacialTrait racialTrait = new RacialTrait();
+	
 	private static Map<RaceType, Race> typeToRaceMap;
 	static {
 		typeToRaceMap = new HashMap<RaceType, Race>();
@@ -26,6 +28,10 @@ public abstract class Race {
 	public static Race getRaceFromMap(RaceType type) {
 		return typeToRaceMap.get(type);
 	}
+	
+	public Race() {
+		setRacialTraits();
+	}
 
 	public abstract Size getSize();
 
@@ -34,4 +40,12 @@ public abstract class Race {
 	public abstract Vision getVision();
 	
 	public abstract String toString();
+	
+	public abstract String getDescription();
+	
+	public abstract void setRacialTraits();
+
+	public RacialTrait getRacialTraits() {
+		return racialTrait;
+	}
 }

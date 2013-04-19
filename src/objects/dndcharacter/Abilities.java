@@ -1,82 +1,73 @@
 package objects.dndcharacter;
-import objects.util.Range;
 
 public class Abilities {
 
-	public static enum AbilityType { STRENGTH, CONSTITUTION, DEXTERITY, INTELLIGENCE, WISDOM, CHARISMA };
+	public static enum AbilityType { ANY, STRENGTH, CONSTITUTION, DEXTERITY, INTELLIGENCE, WISDOM, CHARISMA };
 	
-	private Range strength, constitution, dexterity, intelligence, wisdom, charisma;
-
-	public static int MINIMUM_ABILITY_VALUE = 1;
-	public static int MAXIMUM_ABILITY_VALUE = Integer.MAX_VALUE;
+	private int strength, constitution, dexterity, intelligence, wisdom, charisma;
 	
 	public Abilities() {
-		
+		setDefaults();
 	}
 	
-	public Abilities(int defaultValue){
-		strength = createAbility(defaultValue);
-		dexterity = createAbility(defaultValue); 
-		constitution = createAbility(defaultValue);
-		wisdom = createAbility(defaultValue);
-		intelligence = createAbility(defaultValue);
-		charisma = createAbility(defaultValue);
-	}
-	
-	protected Range createAbility(int defaultValue) {
-		return new Range(MINIMUM_ABILITY_VALUE, defaultValue, MAXIMUM_ABILITY_VALUE);
+	private void setDefaults() {
+		this.strength = 10;
+		this.constitution = 10;
+		this.dexterity = 10;
+		this.intelligence = 10;
+		this.wisdom = 10;
+		this.charisma = 10;
 	}
 	
 	public int getStrength() {
-		return strength.getValue();
+		return strength;
 	}
-
+	
 	public void setStrength(int strength) {
-		this.strength.setValue(strength);
+		this.strength = strength;
 	}
-
-	public int getDexterity() {
-		return dexterity.getValue();
-	}
-
-	public void setDexterity(int dexterity) {
-		this.dexterity.setValue(dexterity);
-	}
-
+	
 	public int getConstitution() {
-		return constitution.getValue();
+		return constitution;
 	}
 
 	public void setConstitution(int constitution) {
-		this.constitution.setValue(constitution);
+		this.constitution = constitution;
 	}
 
-	public int getWisdom() {
-		return wisdom.getValue();
+	public int getDexterity() {
+		return dexterity;
 	}
 
-	public void setWisdom(int wisdom) {
-		this.wisdom.setValue(wisdom);
+	public void setDexterity(int dexterity) {
+		this.dexterity = dexterity;
 	}
 
 	public int getIntelligence() {
-		return intelligence.getValue();
+		return intelligence;
 	}
 
 	public void setIntelligence(int intelligence) {
-		this.intelligence.setValue(intelligence);
+		this.intelligence = intelligence;
+	}
+
+	public int getWisdom() {
+		return wisdom;
+	}
+
+	public void setWisdom(int wisdom) {
+		this.wisdom = wisdom;
 	}
 
 	public int getCharisma() {
-		return charisma.getValue();
+		return charisma;
 	}
 
 	public void setCharisma(int charisma) {
-		this.charisma.setValue(charisma);
+		this.charisma = charisma;
 	}
 
-	public static int getAbilityModifier(int value) {
+	public static int getModifier(int value) {
 		return value / 2 - 5;
 	}
-
 }

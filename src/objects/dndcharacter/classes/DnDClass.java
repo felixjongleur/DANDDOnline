@@ -9,6 +9,8 @@ import objects.armor.Armor.ArmorType;
 import objects.dndcharacter.Abilities.AbilityType;
 import objects.weapons.Weapon.WeaponType;
 
+import com.esotericsoftware.jsonbeans.ObjectMap.Entry;
+
 public abstract class DnDClass {
 
 	public enum ClassType { DEFAULT, CLERIC, FIGHTER, PALADIN, RANGER, ROGUE, WARLOCK, WARLORD, WIZARD };
@@ -18,6 +20,8 @@ public abstract class DnDClass {
 	public enum Role { CONTROLLER, DEFENDER, LEADER, STRIKER };
 	
 	public enum PowerSource { ARCANE, DIVINE, MARTIAL };
+	
+	private ClassTrait classTrait = new ClassTrait();
 	
 	private List<AbilityType> keyAbilities = new ArrayList<AbilityType>();
 	
@@ -41,6 +45,8 @@ public abstract class DnDClass {
 	public abstract int getMinNumberOfTrainedSkills();	
 	public abstract ClassType getClassType();	
 	public abstract String toString();
+	public abstract String getDescription();
+	public abstract void setClassTraits();
 
 	private static Map<ClassType, DnDClass> typeToClassMap;
 	static {
@@ -55,6 +61,18 @@ public abstract class DnDClass {
 //		typeToClassMap.put(ClassType.WARLORD, new Warlord());
 //		typeToClassMap.put(ClassType.WIZARD, new Wizard());
 	};
+	
+	public DnDClass() {
+		setClassTraits();
+		setKeyAbilities();
+		setSkillToAbilityMap();
+		setArmorProficiencies();
+		setWeaponProficiencies();
+	}
+	
+	public ClassTrait getClassTraits() {
+		return classTrait;
+	}
 	
 	public static DnDClass getClassFromMap(ClassType type) {
 		return typeToClassMap.get(type);
@@ -82,5 +100,13 @@ public abstract class DnDClass {
 
 	public List<WeaponType> getWeaponProficiencies() {
 		return weaponProficiencies;
+	}
+	
+	public List<ClassSkills> getAvailableClassSkills() {
+		List<ClassSkills> classSkills = new ArrayList<ClassSkills>();
+		for(Map.Entry<ClassSkills, AbilityType> entry : getSkillToAbilityMap().entrySet()) {
+			classSkills.add(entry.getKey());
+		}
+		return classSkills;
 	}
 }

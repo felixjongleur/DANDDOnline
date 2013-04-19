@@ -3,12 +3,20 @@ package objects.dndcharacter.classes;
 import objects.armor.Armor.ArmorType;
 import objects.dndcharacter.Abilities;
 import objects.dndcharacter.Abilities.AbilityType;
-import objects.dndcharacter.classes.DnDClass.ClassSkills;
-import objects.dndcharacter.classes.DnDClass.ClassType;
+import objects.dndcharacter.Defense.DefenseType;
 import objects.weapons.Weapon.WeaponType;
 
 public class Cleric extends DnDClass {
 
+	private String description = "Battle leaders who are invested with divine power. They blast foes with magical prayers, " +
+			  					 "bolster and heal companions, and lead the way to victory with a mace in one hand and a " +
+			  					 "holy symbol in the other. Clerics run the gamut from humble servants of the common folk " +
+			  					 "to ruthless enforcers of evil gods.";
+	
+	public Cleric() {
+		super();
+	}
+	
 	@Override
 	public Role getRole() {
 		return Role.LEADER;
@@ -52,7 +60,7 @@ public class Cleric extends DnDClass {
 
 	@Override
 	public int getDailyHealingSurges(int constitution) {
-		return 7 + Abilities.getAbilityModifier(constitution);
+		return 7 + Abilities.getModifier(constitution);
 	}
 
 	@Override
@@ -80,4 +88,13 @@ public class Cleric extends DnDClass {
 		return "Cleric";
 	}
 
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public void setClassTraits() {
+		getClassTraits().getDefenses().put(DefenseType.WILL, 2);
+	}
 }

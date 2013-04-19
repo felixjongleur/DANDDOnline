@@ -65,7 +65,7 @@ public class WorldChatState extends BasicGameState {
 		
 		background = ResourceManager.getInstance().getImage("WORLD_CHAT_IMAGE");
 	
-		chatWindow = new TextArea(76, startingRows);
+		chatWindow = new TextArea(74, startingRows);
 		chatWindow.setBackground(new Color(0, 0, 0, 0.6f));
 		chatWindow.setForeground(Color.white);
 		chatWindow.setOpaque(true);
@@ -104,7 +104,7 @@ public class WorldChatState extends BasicGameState {
 		messageField.addKeyListener(newMessage);
 
 		playerWindow = new TextArea(15, 38);
-		playerWindow.setLocation(chatWindow.getAbsoluteX() + chatWindow.getWidth() + 10, 75);
+		playerWindow.setLocation(chatWindow.getAbsoluteX() + chatWindow.getWidth() + 20, 75);
 		playerWindow.setBackground(new Color(0, 0, 0, 0.6f));
 		playerWindow.setForeground(Color.white);
 		playerWindow.setOpaque(true);

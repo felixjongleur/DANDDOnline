@@ -3,9 +3,15 @@ package objects.dndcharacter.classes;
 import objects.armor.Armor.ArmorType;
 import objects.dndcharacter.Abilities;
 import objects.dndcharacter.Abilities.AbilityType;
+import objects.dndcharacter.Defense.DefenseType;
 import objects.weapons.Weapon.WeaponType;
 
 public class Fighter extends DnDClass {
+	
+	private String description = "Determined combat adepts that are trained to protect the other members of their adventuring " +
+			  					 "groups. Fighters define the front line by bashing and slicing foes into submission while " +
+			  					 "reflecting enemy attacks through the use of heavy armor. Fighters draw weapons for gold, " +
+			  					 "for glory, for duty, and for the mere joy of unrestrained martial exercise.";
 
 	@Override
 	public int getHPModifier() {
@@ -29,7 +35,7 @@ public class Fighter extends DnDClass {
 
 	@Override
 	public int getDailyHealingSurges(int constitution) {
-		return 9 + Abilities.getAbilityModifier(constitution);
+		return 9 + Abilities.getModifier(constitution);
 	}	
 	
 	@Override
@@ -81,5 +87,15 @@ public class Fighter extends DnDClass {
 		getWeaponProficiencies().add(WeaponType.MILITARY_MELEE);
 		getWeaponProficiencies().add(WeaponType.SIMPLE_RANGED);
 		getWeaponProficiencies().add(WeaponType.MILITARY_RANGED);
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public void setClassTraits() {
+		getClassTraits().getDefenses().put(DefenseType.FORTITUDE, 2);
 	}
 }

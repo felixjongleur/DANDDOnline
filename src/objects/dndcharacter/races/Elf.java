@@ -29,4 +29,16 @@ public class Elf extends Race {
 		return null;
 	}
 
+	@Override
+	public String getDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setRacialTraits() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -1,5 +1,6 @@
 package gui.menu;
 
+import enums.Enums.RaceType;
 import gui.util.AlertMessagePopup;
 import gui.util.managers.ResourceManager;
 import kryonet.DnDNetwork.CreateCharacter;
@@ -17,10 +18,15 @@ import mdes.slick.sui.ToggleButton;
 import mdes.slick.sui.ToggleButtonGroup;
 import mdes.slick.sui.event.ActionEvent;
 import mdes.slick.sui.event.ActionListener;
-import mdes.slick.sui.event.ChangeEvent;
-import mdes.slick.sui.event.ChangeListener;
 import mdes.slick.sui.event.KeyEvent;
 import mdes.slick.sui.event.KeyListener;
+import mdes.slick.sui.event.MouseAdapter;
+import mdes.slick.sui.event.MouseEvent;
+import objects.dndcharacter.Abilities;
+import objects.dndcharacter.Abilities.AbilityType;
+import objects.dndcharacter.classes.DnDClass;
+import objects.dndcharacter.classes.DnDClass.ClassType;
+import objects.dndcharacter.races.Race;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -52,6 +58,9 @@ public class CreateCharacterState extends BasicGameState {
 	ToggleButton clericButton, fighterButton, paladinButton, rangerButton;
 	ToggleButton rogueButton, warlockButton, warlordButton, wizardButton;
 	
+	int availableAbilities = 16;
+	ToggleButton available, strength, constitution, dexterity, intelligence, wisdom, charisma;
+	
 	Label characterClass;
 
 	ToggleButtonGroup raceGroup;
@@ -63,52 +72,13 @@ public class CreateCharacterState extends BasicGameState {
 
 	private AlertMessagePopup popup;
 	private boolean render = false;
+	private ToggleButton currentClass;
+	private ToggleButton currentRace;
+	
+	private Abilities abilities;
+	private MouseAdapter abilitiesListener;
 	
 	String genderForImages = "MALE";
-	
-	String humanDescripton =      "Of all the civilized races, humans are the most adaptable and diverse. Human settlements can " +
-								  "be found almost anywhere, and human morals, customs, and interests vary greatly. Humans are " +
-								  "decisive and sometimes rash. They explore the darkest reaches of the world in search of " +
-								  "knowledge and power.\n\n" +
-								  "  - Ability Scores : +2 One Ability Score\n\n" +
-								  "  - Bonus At-Will Power : One Extra Power\n\n" +
-								  "  - Bonus Feat : One Extra Feat\n\n" +
-								  "  - Bonus Skill : One Extra Skill\n\n" +
-								  "  - Defense Bonus : +1 to Fortitude, Reflex and Will\n\n" +
-								  "  - Favors : Any Class";
-	
-	String dragonbornDescripton = "Born to fight, dragonborn are a race of wandering mercenaries, soldiers and adventurers. " +
-								  "Long ago, their empire contended for worldwide domination, but now only a few rootless clans " +
-								  "of these honorable warriors remain to pass on their legends of ancient glory.\n\n" +
-								  "  - Ability Scores : +2 Strength; +2 Charisma\n\n" +
-								  "  - Skill Bonuses  : +2 History ; +2 Intimidate\n\n" +
-								  "  - Favors : Warlord, Fighter and Paladin";
-	
-	String clericDescription =    "Battle leaders who are invested with divine power. They blast foes with magical prayers, " +
-								  "bolster and heal companions, and lead the way to victory with a mace in one hand and a " +
-								  "holy symbol in the other. Clerics run the gamut from humble servants of the common folk " +
-								  "to ruthless enforcers of evil gods.\n\n" +
-								  "  - Role : Leader \n\n" +
-								  "  - Power Source : Divine \n\n" +
-								  "  - Key Abilities : Wisdom, Strength, Charisma \n\n" +
-								  "  - Armor Proficiencies : Cloth, Leather, Hide, Chainmail \n\n" +
-								  "  - Weapon Proficiencies : Simple Melee, Simple Ranged \n\n" +
-								  "  - Implement : Holy symbol \n\n" +
-								  "  - Bonus to Defense : +2 Will \n\n" +
-								  "  - Trained Skills : Religion \n\n" +
-								  "  - Build Options : Battle Cleric, Devoted Cleric";
-	
-	String fighterDescription =   "Determined combat adepts that are trained to protect the other members of their adventuring " +
-								  "groups. Fighters define the front line by bashing and slicing foes into submission while " +
-								  "reflecting enemy attacks through the use of heavy armor. Fighters draw weapons for gold, " +
-								  "for glory, for duty, and for the mere joy of unrestrained martial exercise.\n\n" +
-								  "  - Role : Defender \n\n" +
-								  "  - Power Source : Martial \n\n" +
-								  "  - Key Abilities : Strength, Dexterity, Wisdom, Constitution \n\n" +
-								  "  - Armor Proficiencies : Cloth, Leather, Hide, Chainmail, Scale \n\n" +
-								  "  - Weapon Proficiencies : Simple Melee, Military Melee, Simple Ranged, Military Ranged \n\n" +
-								  "  - Bonus to Defense : +2 Fortitude \n\n" +
-								  "  - Build Options : Great Weapon Fighter, Guardian Fighter";
 	
 	public CreateCharacterState(int stateID) {
 		this.stateID = stateID;
@@ -130,8 +100,46 @@ public class CreateCharacterState extends BasicGameState {
 		display = new Display(gc);
 		
 		raceGroup = new ToggleButtonGroup();
-		classGroup = new ToggleButtonGroup();	
+		classGroup = new ToggleButtonGroup();		
 		genderGroup = new ToggleButtonGroup();
+		
+		abilities = new Abilities();
+		
+		abilitiesListener = new MouseAdapter() {			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if(e.getButton() == MouseEvent.BUTTON1) {
+					availableAbilities--;
+					if(((ToggleButton) e.getSource()).getName() == AbilityType.STRENGTH.toString())
+						abilities.setStrength(abilities.getStrength()+1);
+					if(((ToggleButton) e.getSource()).getName() == AbilityType.CONSTITUTION.toString())
+						abilities.setConstitution(abilities.getConstitution()+1);
+					if(((ToggleButton) e.getSource()).getName() == AbilityType.DEXTERITY.toString())
+						abilities.setDexterity(abilities.getDexterity()+1);
+					if(((ToggleButton) e.getSource()).getName() == AbilityType.INTELLIGENCE.toString())
+						abilities.setIntelligence(abilities.getIntelligence()+1);
+					if(((ToggleButton) e.getSource()).getName() == AbilityType.WISDOM.toString())
+						abilities.setWisdom(abilities.getWisdom()+1);
+					if(((ToggleButton) e.getSource()).getName() == AbilityType.CHARISMA.toString())
+						abilities.setCharisma(abilities.getCharisma()+1);
+				} else
+				if(e.getButton() == MouseEvent.BUTTON2) {
+					availableAbilities++;
+					if(((ToggleButton) e.getSource()).getName() == AbilityType.STRENGTH.toString())
+						abilities.setStrength(abilities.getStrength()-1);
+					if(((ToggleButton) e.getSource()).getName() == AbilityType.CONSTITUTION.toString())
+						abilities.setConstitution(abilities.getConstitution()-1);
+					if(((ToggleButton) e.getSource()).getName() == AbilityType.DEXTERITY.toString())
+						abilities.setDexterity(abilities.getDexterity()-1);
+					if(((ToggleButton) e.getSource()).getName() == AbilityType.INTELLIGENCE.toString())
+						abilities.setIntelligence(abilities.getIntelligence()-1);
+					if(((ToggleButton) e.getSource()).getName() == AbilityType.WISDOM.toString())
+						abilities.setWisdom(abilities.getWisdom()-1);
+					if(((ToggleButton) e.getSource()).getName() == AbilityType.CHARISMA.toString())
+						abilities.setCharisma(abilities.getCharisma()-1);
+				}
+			}
+		};
 		
 		createCharacterContainer();
 		createRaceContainer();
@@ -239,7 +247,7 @@ public class CreateCharacterState extends BasicGameState {
 		display.add(classTitle);		
 		
 		classDescription = new TextArea();
-		classDescription.setSize(275, characterContainer.getHeight() / 2 - 75);
+		classDescription.setSize(275, characterContainer.getHeight() / 2 - 70);
 		classDescription.setMinimumSize(classDescription.getSize());
 		classDescription.setBackground(new Color(0, 0, 0, 0.6f));
 		classDescription.setForeground(Color.white);
@@ -253,14 +261,13 @@ public class CreateCharacterState extends BasicGameState {
 		classPane.setSize(classDescription.getWidth(), classDescription.getHeight());
 		display.add(classPane);
 		
-		ChangeListener textChanged = new ChangeListener() {			
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				classPane.scrollToTop();
-			}
-		};
-		
-		classDescription.addChangeListener(textChanged);
+//		ChangeListener textChanged = new ChangeListener() {			
+//			@Override
+//			public void stateChanged(ChangeEvent e) {
+//				classPane.scrollToTop();
+//			}
+//		};		
+//		classDescription.addChangeListener(textChanged);
 	}
 	
 	private void createRaceContainer() {		
@@ -275,7 +282,7 @@ public class CreateCharacterState extends BasicGameState {
 		display.add(raceTitle);
 		
 		raceDescription = new TextArea();
-		raceDescription.setSize(275, characterContainer.getHeight() / 2 - 25);
+		raceDescription.setSize(275, characterContainer.getHeight() / 2 - 70);
 		raceDescription.setMinimumSize(raceDescription.getSize());
 		raceDescription.setBackground(new Color(0, 0, 0, 0.6f));
 		raceDescription.setForeground(Color.white);
@@ -289,14 +296,13 @@ public class CreateCharacterState extends BasicGameState {
 		racePane.setSize(raceDescription.getWidth(), raceDescription.getHeight());
 		display.add(racePane);
 				
-		ChangeListener textChanged = new ChangeListener() {			
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				racePane.scrollToTop();
-			}
-		};
-
-		raceDescription.addChangeListener(textChanged);
+//		ChangeListener textChanged = new ChangeListener() {			
+//			@Override
+//			public void stateChanged(ChangeEvent e) {
+//				racePane.scrollToTop();
+//			}
+//		};
+//		raceDescription.addChangeListener(textChanged);
 	}
 	
 	private void createEmptySquares() {				
@@ -322,14 +328,13 @@ public class CreateCharacterState extends BasicGameState {
 		characterContainer.setOpaque(true);
 		
 		int xStart = 40;
-		int yStart = 55;
+		int yStart = 30;
 		int yOffset = 60;
 		
 		dragonbornButton = new ToggleButton();
 		dragonbornButton.setName("DRAGONBORN");
 		dragonbornButton.setBounds(xStart, yStart, 60, 60);
 		dragonbornButton.setSelected(true);
-		dragonbornButton.setText(dragonbornDescripton);
 		dragonbornButton.setForeground(new Color(0, 0, 0, 0.0f));
 		dragonbornButton.setGroup(raceGroup);
 		characterContainer.add(dragonbornButton);
@@ -360,8 +365,7 @@ public class CreateCharacterState extends BasicGameState {
 		humanButton.setText(humanDescripton);
 		humanButton.setBounds(xStart + 60 + xStart, yStart + yOffset, 60, 60);
 		humanButton.setGroup(raceGroup);
-		characterContainer.add(humanButton);
-		
+		characterContainer.add(humanButton);		
 		
 		tieflingButton = new ToggleButton();
 		tieflingButton.setBounds(xStart + 60 + xStart, yStart + 2 * yOffset, 60, 60);
@@ -397,23 +401,14 @@ public class CreateCharacterState extends BasicGameState {
 		genderForImages = genderGroup.getSelectedButton().getText();
 		setRaceImages();
 		
-//		characterClass = new Label("TEST");
-//		characterClass.setForeground(Color.white);
-//		characterClass.setFont(LoadingState.labelFont);
-//		characterClass.pack();
-//		characterClass.setLocationRelativeTo(characterContainer);
-//		characterClass.setY(yStart + 4 * yOffset + 80);
-//		characterContainer.add(characterClass);
-		
 		xStart = 5;
-		yStart = yStart + 4 * yOffset + 120;
+		yStart = yStart + 5 * yOffset + 30;
 				
 		clericButton = new ToggleButton();
 		clericButton.setBounds(xStart, yStart, 60, 60);
 		clericButton.setForeground(new Color(0, 0, 0, 0.0f));
 		clericButton.setImage(ResourceManager.getInstance().getImage("CLERIC"));
 		clericButton.setSelected(true);
-		clericButton.setText(clericDescription);
 		clericButton.setName("CLERIC");
 		clericButton.setGroup(classGroup);
 		characterContainer.add(clericButton);
@@ -423,7 +418,6 @@ public class CreateCharacterState extends BasicGameState {
 		fighterButton.setForeground(new Color(0, 0, 0, 0.0f));
 		fighterButton.setImage(ResourceManager.getInstance().getImage("FIGHTER"));
 		fighterButton.setGroup(classGroup);
-		fighterButton.setText(fighterDescription);
 		fighterButton.setName("FIGHTER");
 		characterContainer.add(fighterButton);
 		
@@ -450,8 +444,7 @@ public class CreateCharacterState extends BasicGameState {
 		warlockButton.setBounds(xStart + 60, yStart + 60, 60, 60);
 		warlockButton.setImage(ResourceManager.getInstance().getImage("EMPTY_BAG_SQUARE"));
 		warlockButton.setGroup(classGroup);
-		characterContainer.add(warlockButton);
-		
+		characterContainer.add(warlockButton);		
 		
 		warlordButton = new ToggleButton();
 		warlordButton.setBounds(xStart + 2 * 60, yStart + 60, 60, 60);
@@ -464,6 +457,85 @@ public class CreateCharacterState extends BasicGameState {
 		wizardButton.setImage(ResourceManager.getInstance().getImage("EMPTY_BAG_SQUARE"));
 		wizardButton.setGroup(classGroup);
 		characterContainer.add(wizardButton);
+		
+		yStart += 70;
+		
+		available = new ToggleButton();
+		available.setBounds(xStart + 90, yStart + 70, 60, 60);
+		available.setName(AbilityType.STRENGTH.toString());
+		available.setDisabledImage(ResourceManager.getInstance().getImage("BLANK_SQUARE"));
+		available.setHorizontalAlignment(Label.CENTER_ALIGNMENT);
+		available.setVerticalAlignment(Label.CENTER_ALIGNMENT);
+		available.setDisabledForeground(Color.yellow);
+		available.setEnabled(false);
+		available.packImage();
+		characterContainer.add(available);
+		
+		strength = new ToggleButton();
+		strength.setBounds(xStart, yStart + 150, 60, 60);
+		strength.setName(AbilityType.STRENGTH.toString());
+		strength.setImage(ResourceManager.getInstance().getImage("BLANK_SQUARE"));
+		strength.setHorizontalAlignment(Label.CENTER_ALIGNMENT);
+		strength.setVerticalAlignment(Label.CENTER_ALIGNMENT);
+		strength.setForeground(Color.yellow);
+		strength.packImage();
+		characterContainer.add(strength);
+		strength.addMouseListener(abilitiesListener);
+		
+		constitution = new ToggleButton();
+		constitution.setBounds(xStart + 90, yStart + 150, 60, 60);
+		constitution.setName(AbilityType.CONSTITUTION.toString());
+		constitution.setImage(ResourceManager.getInstance().getImage("BLANK_SQUARE"));
+		constitution.setHorizontalAlignment(Label.CENTER_ALIGNMENT);
+		constitution.setVerticalAlignment(Label.CENTER_ALIGNMENT);
+		constitution.setForeground(Color.yellow);
+		constitution.packImage();
+		characterContainer.add(constitution);
+		constitution.addMouseListener(abilitiesListener);
+		
+		dexterity = new ToggleButton();
+		dexterity.setBounds(xStart + 180, yStart + 150, 60, 60);
+		dexterity.setName(AbilityType.DEXTERITY.toString());
+		dexterity.setImage(ResourceManager.getInstance().getImage("BLANK_SQUARE"));
+		dexterity.setHorizontalAlignment(Label.CENTER_ALIGNMENT);
+		dexterity.setVerticalAlignment(Label.CENTER_ALIGNMENT);
+		dexterity.setForeground(Color.yellow);
+		dexterity.packImage();
+		characterContainer.add(dexterity);
+		dexterity.addMouseListener(abilitiesListener);
+		
+		intelligence = new ToggleButton();
+		intelligence.setBounds(xStart, yStart + 220, 60, 60);
+		intelligence.setName(AbilityType.INTELLIGENCE.toString());
+		intelligence.setImage(ResourceManager.getInstance().getImage("BLANK_SQUARE"));
+		intelligence.setHorizontalAlignment(Label.CENTER_ALIGNMENT);
+		intelligence.setVerticalAlignment(Label.CENTER_ALIGNMENT);
+		intelligence.setForeground(Color.yellow);
+		intelligence.packImage();
+		characterContainer.add(intelligence);
+		intelligence.addMouseListener(abilitiesListener);
+		
+		wisdom = new ToggleButton();
+		wisdom.setBounds(xStart + 90, yStart + 220, 60, 60);
+		wisdom.setName(AbilityType.WISDOM.toString());
+		wisdom.setImage(ResourceManager.getInstance().getImage("BLANK_SQUARE"));
+		wisdom.setHorizontalAlignment(Label.CENTER_ALIGNMENT);
+		wisdom.setVerticalAlignment(Label.CENTER_ALIGNMENT);
+		wisdom.setForeground(Color.yellow);
+		wisdom.packImage();
+		characterContainer.add(wisdom);
+		wisdom.addMouseListener(abilitiesListener);
+		
+		charisma = new ToggleButton();
+		charisma.setBounds(xStart + 180, yStart + 220, 60, 60);
+		charisma.setName(AbilityType.CHARISMA.toString());
+		charisma.setImage(ResourceManager.getInstance().getImage("BLANK_SQUARE"));
+		charisma.setHorizontalAlignment(Label.CENTER_ALIGNMENT);
+		charisma.setVerticalAlignment(Label.CENTER_ALIGNMENT);
+		charisma.setForeground(Color.yellow);
+		charisma.packImage();
+		characterContainer.add(charisma);
+		charisma.addMouseListener(abilitiesListener);
 		
 		display.add(characterContainer);
 	}
@@ -489,15 +561,71 @@ public class CreateCharacterState extends BasicGameState {
 	public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {	
 		genderForImages = genderGroup.getSelectedButton().getText();
 		setRaceImages();
-		raceTitle.setText("\n            " + raceGroup.getSelectedButton().getName());
-		raceDescription.setText(raceGroup.getSelectedButton().getText());
-		classTitle.setText("\n            " + classGroup.getSelectedButton().getName());
-		classDescription.setText(classGroup.getSelectedButton().getText());		
+		
+		if(currentRace != raceGroup.getSelectedButton()) {
+			raceTitle.setText("\n            " + raceGroup.getSelectedButton().getName());
+			setRaceDescription();
+			currentRace = raceGroup.getSelectedButton();
+		}
+		
+		if(currentClass != classGroup.getSelectedButton()) {
+			classTitle.setText("\n            " + classGroup.getSelectedButton().getName());
+			setClassDescription();
+			currentClass = classGroup.getSelectedButton();
+		}
+
+		available.setText("PTS:\n  " + availableAbilities);
+		
+		strength.setText("STR:\n  " + String.valueOf(abilities.getStrength()));
+		constitution.setText("CON:\n  " + String.valueOf(abilities.getConstitution()));
+		dexterity.setText("DEX:\n  " + String.valueOf(abilities.getDexterity()));
+
+		intelligence.setText("INT:\n  " + String.valueOf(abilities.getIntelligence()));
+		wisdom.setText("WIS:\n  " + String.valueOf(abilities.getWisdom()));
+		charisma.setText("CHA:\n  " + String.valueOf(abilities.getCharisma()));
 		
 		display.update(gc, delta);
 		render = true;
 	}
+	
+	private void setRaceDescription() {
+		Race selectedRace = Race.getRaceFromMap(RaceType.valueOf(raceGroup.getSelectedButton().getName()));
+		raceDescription.setText("");
+		raceDescription.addLine(selectedRace.getDescription() + "\n\n");
+		raceDescription.addLine("  - Size : " + selectedRace.getSize().toString() + "\n");
+		raceDescription.addLine("  - Speed : " + selectedRace.getSpeed() + " squares\n");
+		raceDescription.addLine("  - Vision : " + selectedRace.getVision().toString() + "\n\n");
+		if(selectedRace.getRacialTraits().getAbilities().size() > 0)
+			raceDescription.addLine("  - Ability Scores : " + editMapString(selectedRace.getRacialTraits().getAbilities().toString()) + "\n\n");
+		if(selectedRace.getRacialTraits().getSkills().size() > 0)
+			raceDescription.addLine("  - Skill Bonuses  : " + editMapString(selectedRace.getRacialTraits().getSkills().toString()));
+		if(selectedRace.getRacialTraits().getDefenses().size() > 0)
+			raceDescription.addLine("  - Defense Bonuses  : " + editMapString(selectedRace.getRacialTraits().getDefenses().toString()));
+		racePane.scrollToTop(true);
+	}
+	
+	private void setClassDescription() {
+		DnDClass selectedClass = DnDClass.getClassFromMap(ClassType.valueOf(classGroup.getSelectedButton().getName()));
+		classDescription.setText("");
+		classDescription.addLine(selectedClass.getDescription() + "\n\n");
+		classDescription.addLine("  - Role : " + selectedClass.getRole() + "\n\n");
+		classDescription.addLine("  - Power Source : " + selectedClass.getPowerSource() + "\n\n");
+		classDescription.addLine("  - Key Abilities : " + editListString(selectedClass.getKeyAbilities().toString()) + "\n\n");
+		classDescription.addLine("  - Available Skills : " + editListString(selectedClass.getAvailableClassSkills().toString()) + "\n\n");
+		classDescription.addLine("  - Armor Proficiencies : " + editListString(selectedClass.getArmorProficiencies().toString()) + "\n\n");
+		classDescription.addLine("  - Weapon Proficiencies : " + editListString(selectedClass.getWeaponProficiencies().toString()) + "\n\n");
+		classDescription.addLine("  - Bonus to Defense : " + editMapString(selectedClass.getClassTraits().getDefenses().toString()));
+		classPane.scrollToTop(true);
+	}
+	
+	private String editMapString(String str) {
+		return str.replace("{", "\n     ").replace("=", " +").replaceAll("\\,", "\n    ").replace("}", "").replace("_", " ");
+	}
 
+	private String editListString(String str) {
+		return str.replace("[", "\n     ").replaceAll("\\,", "\n    ").replace("]", "").replace("_", " ");
+	}
+	
 	@Override
 	public void receiveObject(Object object) {
 		if(object instanceof CreateCharacter) {

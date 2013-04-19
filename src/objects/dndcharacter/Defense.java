@@ -1,43 +1,36 @@
 package objects.dndcharacter;
 
-import objects.util.Range;
+import java.util.List;
+
+import objects.armor.Armor;
+import objects.armor.Armor.ArmorWeight;
+
 
 public class Defense {
-
-	private Range armor = new Range(0, 10, Integer.MAX_VALUE);
-	private Range fortitude = new Range(0, 10, Integer.MAX_VALUE);
-	private Range reflex = new Range(0, 10, Integer.MAX_VALUE);
-	private Range will = new Range(0, 10, Integer.MAX_VALUE);
+		
+	public enum DefenseType { AC, FORTITUDE, REFLEX, WILL };
 	
-	public int getArmor() {
-		return armor.getValue();
+	public int getBaseDefense(int level) {
+		return (int) (10 + Math.floor(level / 2));
 	}
-
-	public void setArmor(int armor) {
-		this.armor.setValue(armor);
+	
+	public int getArmorClass(int level, List<Armor> armor, int dexterity, int intelligence) {
+		int armorValue = Armor.getArmorValue(armor);
+		if(armorValue == 0 || Armor.getHeaviestArmor(armor) == ArmorWeight.LIGHT) {
+			armorValue += Math.max(Abilities.getModifier(dexterity), Abilities.getModifier(intelligence));
+		}
+		return getBaseDefense(level) + armorValue;
 	}
-
-	public Range getFortitude() {
-		return fortitude;
+	
+	public int getFortitude(int level, int strength, int constitution) {
+		return getBaseDefense(level) + Math.max(Abilities.getModifier(strength), Abilities.getModifier(constitution));
 	}
-
-	public void setFortitude(Range fortitude) {
-		this.fortitude = fortitude;
+	
+	public int getReflex(int level, int dexterity, int intelligence, List<Armor> armor) {
+		return getBaseDefense(level) + Math.max(Abilities.getModifier(dexterity), Abilities.getModifier(intelligence)) + Armor.getShieldBonus(armor);
 	}
-
-	public Range getReflex() {
-		return reflex;
-	}
-
-	public void setReflex(Range reflex) {
-		this.reflex = reflex;
-	}
-
-	public Range getWill() {
-		return will;
-	}
-
-	public void setWill(Range will) {
-		this.will = will;
+	
+	public int getWill(int level, int wisdom, int charisma) {
+		return getBaseDefense(level) + Math.max(Abilities.getModifier(wisdom), Abilities.getModifier(charisma));
 	}
 }
